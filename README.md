@@ -14,7 +14,7 @@ Run /IncubyteFinal/LoadDataToCustTable.py for loading ".dsv" a file into the dat
 Run /IncubyteFinal/LoadDataToCustTable.py for loading data into corresponding country tables.
 
 # Images:
-**cs50 IDE Loading Data page**
+**cs50 IDE Loading Data into country table**
 ![cs50 IDE](IncubyteFinal/Images/LoadingDataCountryTable.png)
 
 **phpLiteAdmin page**
