@@ -10,36 +10,35 @@ c = connection.cursor()
 c.execute("SELECT name FROM sqlite_master WHERE type='table';")
 try:
     for row in c.fetchall():
-        row = str(row).strip('\\()')
-        row = str(row).strip(',')
-        row = str(row).replace("'","")
-        countries.append(row)
+        countries.append(row[0])
 except sqlite3.Error as error:
-    print("Failed to read data from table ", error)
+    print("Failed to read data from table | ", error)
 
-countries = countries[1:]
-
+print(countries)
 c.execute('''
 SELECT * FROM cust_details
           ''')
+          
+def insertInTheTable(row):
+    c.executemany("insert into cust_{} values(?,?,?,?,?,?,?,?,?,?);".format(row[7]),(row,))
 
 try:
     for row in c.fetchall():
         if "cust_{}".format(row[7]) in countries:
-            print("cust_{}".format(row[7]))
-            c.executemany("insert into cust_{} values(?,?,?,?,?,?,?,?,?,?);".format(row[7]),(row,))
+            insertInTheTable(row)
         else:
             countries.append("cust_{}".format(row[7]))
-            print("cust_{}".format(row[7]))
-            c.execute("""create table cust_{}(name varchar(255) not null,cust_id varchar(18) not null,
+            print("Table Created : ","cust_{}".format(row[7]))
+            c.execute("""create table cust_{}(name varchar(255) not null,cust_id varchar(18) primary key,
             open_date date not null,consult_date date,vac_type char(5),
             dr_name char(255),state char(5),country char(5),
             dob date,cust_status char(1));""".format(row[7]))
-            c.executemany("insert into cust_{} values(?,?,?,?,?,?,?,?,?,?);".format(row[7]),(row,))
+            insertInTheTable(row)
 
 except sqlite3.Error as error:
-    print("Failed to read data from table", error)
+    print("Failed to load data in table |", error)
 
-connection.commit()
-c.close()
+finally:
+    connection.commit()
+    c.close()
 
